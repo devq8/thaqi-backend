@@ -3,19 +3,30 @@ from chatbot.models import Chat, Message
 from accounts.serializers import UserSerializer
 
 
-class MessageSerializer(serializers.ModelSerializer):
+class MessageListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Message
-        fields = ['id', 'chat', 'message', 'direction', 'created_at']
+        fields = ['id', 'message', 'response', 'created_at']
         ordering = ['created_at']
 
-class ChatSerializer(serializers.ModelSerializer):
+class MessageCRUDSerializer(serializers.ModelSerializer):
     
-    user = UserSerializer()
-    # messages = MessageSerializer()
+    class Meta:
+        model = Message
+        fields = ['message', 'response']
+        
+
+class ChatListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
-        fields = ['id', 'user', 'title', 'created_at', 'messages']
+        fields = ['id', 'user', 'title', 'created_at',]
         ordering = ['-created_at']
+
+class ChatCRUDSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Chat
+        fields = [ 'title',]
+

@@ -21,17 +21,8 @@ class Message(models.Model):
         on_delete=models.CASCADE,
         related_name='messages',
     )
-    direction_options = [
-        ('Se','Sent'),
-        ('Re','Received'),
-    ]
-    direction = models.CharField(
-        max_length=2, 
-        choices=direction_options, 
-        blank=False, 
-        default=direction_options[0],
-    )
-    message = models.TextField(blank=False)
+    message = models.TextField(blank=False, null=False)
+    response = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
