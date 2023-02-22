@@ -12,7 +12,7 @@ class ChatAdmin(admin.ModelAdmin):
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin): 
     fields = ('chat', 'message', 'response')
-    list_display = ('id', 'chat', 'user', 'message', 'response')
+    list_display = ('id', 'chat', 'user', 'message', 'response', 'created_at')
     list_filter = ('chat', 'created_at')
     ordering = ('created_at',)
     search_fields = ('chat',)

@@ -69,7 +69,7 @@ class MessageListView(ListAPIView):
             chat = Chat.objects.get(id=chat_id)
             if chat.user != self.request.user:
                 raise PermissionDenied("You are not the owner of this chat.")
-            queryset = Message.objects.filter(chat=chat)
+            queryset = Message.objects.filter(chat=chat).order_by('created_at')
             
             print(f'We found {queryset.count()} messages under that chat ({chat}) in the system.')
             return queryset
@@ -110,9 +110,15 @@ class MessageDestroyView(DestroyAPIView):
     lookup_field = 'id'
     lookup_url_kwarg = 'message_id'
 
-def generate_answer(prompt):
+def generate_answer(chat, prompt):
+    
     model_engine = "text-davinci-003"
-    prompt = (f"{prompt}")
+    history = ''
+    for message in chat.messages.all():
+        history += f'{message.message.strip()}\n\n{message.response.strip()}\n\n'
+    
+    prompt = f"{history}{prompt}"
+    
     completions = openai.Completion.create(
         engine=model_engine,
         prompt=prompt,
@@ -121,11 +127,5 @@ def generate_answer(prompt):
         stop=None,
         temperature=0.5,
     )
-    message = completions.choices[0].text
-    return message
-
-# @api_view(['POST'])
-# def chat(request):
-#     text = request.data.get('text', '')
-#     answer = generate_answer(text)
-#     return Response({'answer': answer})
+    answer = completions.choices[0].text
+    return answer

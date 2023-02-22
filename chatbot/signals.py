@@ -1,5 +1,5 @@
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from chatbot.models import Message
 from chatbot.views import generate_answer
 
@@ -7,12 +7,9 @@ from chatbot.views import generate_answer
 def save_response(sender, instance, *args, **kwargs):
     if instance.message:
         try:
-            print('Me:')
-            print(instance.message)
-            print('Thaqi:')
-            response = generate_answer(instance.message)
-            print(response[2:])
-            instance.response = response[2:]
+            response = generate_answer(instance.chat, instance.message)
+            print(response)
+            instance.response = response
             
         except Exception as e:
             print(e)
