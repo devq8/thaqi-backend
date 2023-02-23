@@ -102,7 +102,18 @@ if DEVELOPMENT_MODE is True:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-# elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+elif DEVELOPMENT_MODE is False:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', 
+            'NAME': env('DB_NAME'),
+            'USER': env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'HOST': env('DB_HOST'),
+            'PORT': env('DB_PORT'),
+        }
+}
+
 #     if os.getenv("DATABASE_URL", None) is None:
 #         raise Exception("DATABASE_URL environment variable not defined")
 #     DATABASES = {
