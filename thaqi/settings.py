@@ -95,14 +95,7 @@ WSGI_APPLICATION = 'thaqi.wsgi.application'
 
 DEVELOPMENT_MODE = env('DEVELOPMENT_MODE')
 
-if DEVELOPMENT_MODE is True:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-elif DEVELOPMENT_MODE is False:
+if DEVELOPMENT_MODE is False:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', 
@@ -112,7 +105,14 @@ elif DEVELOPMENT_MODE is False:
             'HOST': env('DB_HOST'),
             'PORT': env('DB_PORT'),
         }
-}
+    }
+else :
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 #     if os.getenv("DATABASE_URL", None) is None:
 #         raise Exception("DATABASE_URL environment variable not defined")
