@@ -107,12 +107,12 @@ DATABASES = {
     }
 }
 # else :
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
+# }
 
 #     if os.getenv("DATABASE_URL", None) is None:
 #         raise Exception("DATABASE_URL environment variable not defined")
