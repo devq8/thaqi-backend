@@ -30,6 +30,14 @@ class ChatListView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Chat.objects.filter(user=user).order_by('-created_at')
+
+class ChatListPublicView(ListAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatListSerializer
+
+    def get_queryset(self):
+        user = User.objects.get(username='public')
+        return Chat.objects.filter(user=user).order_by('-created_at')
     
 class ChatCreateView(CreateAPIView):
     serializer_class = ChatCRUDSerializer
@@ -68,6 +76,33 @@ class MessageListView(ListAPIView):
             chat_id = self.kwargs.get(self.lookup_url_kwarg)
             chat = Chat.objects.get(id=chat_id)
             if chat.user != self.request.user:
+                raise PermissionDenied("You are not the owner of this chat.")
+            queryset = Message.objects.filter(chat=chat).order_by('created_at')
+            
+            print(f'We found {queryset.count()} messages under that chat ({chat}) in the system.')
+            return queryset
+        except Chat.DoesNotExist:
+            print('Chat was not found!')
+            return None
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if queryset is None:
+            return Response({'Error': 'Chat is not found!'}, status=HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+class MessagePublicListView(ListAPIView):
+    serializer_class = MessageListSerializer
+    lookup_field = 'chat'
+    lookup_url_kwarg = 'chat_id'
+
+    def get_queryset(self):
+        try:
+            chat_id = self.kwargs.get(self.lookup_url_kwarg)
+            chat = Chat.objects.get(id=chat_id)
+            user = User.objects.get(username='public')
+            if chat.user != user:
                 raise PermissionDenied("You are not the owner of this chat.")
             queryset = Message.objects.filter(chat=chat).order_by('created_at')
             
